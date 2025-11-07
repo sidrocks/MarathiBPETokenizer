@@ -1,30 +1,29 @@
-# ...existing code...
 """
-Gradio app for Marathi BPE Tokenizer — redesigned UI: elegant, business-oriented styling.
+Gradio app for Marathi BPE Tokenizer — redesigned UI with hover tooltips and smooth animations.
 Usage: python app.py
 """
+
 from typing import Tuple, List, Dict
 import re
-
 import gradio as gr
 
 from tokenizer import MarathiBPETokenizer  # type: ignore
 
-# Accent palette: bright but refined accents for token chips
+# Accent palette for token chips
 ACCENTS = [
     "#1FB6FF",  # azure
     "#00D4B8",  # teal
-    "#FFB86B",  # warm amber
+    "#FFB86B",  # amber
     "#FF6B6B",  # coral
-    "#A78BFA",  # muted violet
-    "#FFD166",  # soft yellow
+    "#A78BFA",  # violet
+    "#FFD166",  # yellow
     "#8ED1FC",  # light sky
     "#6CE0B6",  # mint
 ]
 
 
 def _token_text(tokenizer: MarathiBPETokenizer, tid: int) -> str:
-    """Resolve token id to readable text using common fallbacks."""
+    """Resolve token id to readable text."""
     try:
         if hasattr(tokenizer, "decode"):
             out = tokenizer.decode([tid])
@@ -56,7 +55,6 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
         )
         return placeholder, "<div style='color:#9CA3AF;'>Token count will appear here</div>", placeholder
 
-    # Try bulk encode; fallback to per-word
     try:
         token_ids: List[int] = tokenizer.encode(text)
     except Exception:
@@ -67,7 +65,6 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
             except Exception:
                 continue
 
-    # map unique token ids -> accent color
     tid_to_color: Dict[int, str] = {}
     unique_tids: List[int] = []
     for tid in token_ids:
@@ -75,20 +72,17 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
             tid_to_color[tid] = ACCENTS[len(unique_tids) % len(ACCENTS)]
             unique_tids.append(tid)
 
-    # Visualization tile (azure-toned business tile)
     vis_outer = [
-        '<div style="padding:18px; border-radius:12px; background:linear-gradient(180deg,#063b66 0%,#0a2b48 100%);'
+        '<div style="position:relative; padding:18px; border-radius:12px; background:linear-gradient(180deg,#063b66 0%,#0a2b48 100%);'
         'color:#F8FAFC; font-family:Inter, \'Noto Sans Devanagari\', Arial, sans-serif; font-size:18px; line-height:2;">'
     ]
 
-    # split text into tokens/chunks for visualization (use tokenizer.pattern if available)
     pattern = getattr(tokenizer, "pattern", r"\S+")
     chunks = re.findall(pattern, text)
     token_idx = 0
-    token_rows = []  # list of (idx, tid, token_text, color) for table
+    token_rows = []
 
     for chunk in chunks:
-        # prefer tokenizer's _apply_bpe if available, else encode chunk
         if hasattr(tokenizer, "_apply_bpe"):
             try:
                 chunk_tids = tokenizer._apply_bpe(chunk)
@@ -105,12 +99,13 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
             color = tid_to_color.get(tid, ACCENTS[0])
             token_rows.append((token_idx, tid, token_text, color))
 
-            # bright chip with subtle border and drop
+            # Each chip has data attributes for JS tooltip
             vis_outer.append(
                 f'<span class="token-chip" data-idx="{token_idx}" '
+                f'data-tid="{tid}" data-text="{token_text}" '
                 f'style="background:{color}; color:#fff; padding:8px 12px; margin:6px 6px 6px 0; '
-                f'border-radius:10px; display:inline-block; font-weight:600; box-shadow:0 6px 18px rgba(3,12,26,0.35); '
-                f'text-shadow:0 1px 2px rgba(0,0,0,0.25);">'
+                f'border-radius:10px; display:inline-block; font-weight:600; cursor:pointer; '
+                f'box-shadow:0 4px 12px rgba(3,12,26,0.25); text-shadow:0 1px 2px rgba(0,0,0,0.25);">'
                 f'{token_text}</span>'
             )
             token_idx += 1
@@ -118,7 +113,6 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
     vis_outer.append("</div>")
     visual_html = "".join(vis_outer)
 
-    # Count card: clean slate card
     count_html = (
         '<div style="padding:14px; border-radius:10px; background:linear-gradient(180deg,#f8fbff 0%,#eaf3ff 100%);'
         'color:#0b2540; text-align:center; font-family:Inter, Arial, sans-serif;">'
@@ -127,11 +121,13 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
         "</div>"
     )
 
-    # Token IDs table: elegant white text on soft azure panel
     table_parts = [
         '<div style="padding:12px; border-radius:10px; background:#083E8C; color:#FFFFFF; max-height:420px; overflow:auto;">',
         '<table style="width:100%; border-collapse:collapse; font-family:Menlo, Monaco, monospace; font-size:13px;">',
-        '<thead><tr style="text-align:left; color:red;"><th style="padding:8px 10px;">Idx</th><th style="padding:8px 10px;">Token ID</th><th style="padding:8px 10px;">Token</th><th style="padding:8px 10px;">Color</th></tr></thead>',
+        '<thead><tr style="text-align:left;"><th style="padding:8px 10px;">Idx</th>'
+        '<th style="padding:8px 10px;">Token ID</th>'
+        '<th style="padding:8px 10px;">Token</th>'
+        '<th style="padding:8px 10px;">Color</th></tr></thead>',
         "<tbody>"
     ]
 
@@ -141,7 +137,8 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
             f'<td style="padding:8px 10px; color:#C9D6E6;">{idx}</td>'
             f'<td style="padding:8px 10px; font-weight:700; color:#FFFFFF;">{tid}</td>'
             f'<td style="padding:8px 10px; color:#FFFFFF;">{ttext!r}</td>'
-            f'<td style="padding:8px 10px;"><span style="display:inline-block; background:{color}; padding:6px 14px; border-radius:8px; box-shadow:0 6px 14px rgba(3,12,26,0.28);"></span></td>'
+            f'<td style="padding:8px 10px;"><span style="display:inline-block; background:{color}; '
+            f'padding:6px 14px; border-radius:8px; box-shadow:0 6px 14px rgba(3,12,26,0.28);"></span></td>'
             "</tr>"
         )
 
@@ -152,56 +149,98 @@ def tokenize_and_visualize(text: str, tokenizer: MarathiBPETokenizer) -> Tuple[s
 
 
 def create_app(tokenizer: MarathiBPETokenizer) -> gr.Blocks:
-    """Build Gradio Blocks UI with refined, business styling."""
+    """Build Gradio Blocks UI with refined styling, hover animation, and tooltips."""
     css = """
-    <style>
-      :root{
-        --panel-bg:#0b2540;
-        --tile-azure:#083E8C;
-        --muted-text:#9CA3AF;
-        --header-grey:#374151;
-      }
-      /* Page baseline */
-      body { background: linear-gradient(180deg,#061328 0%, #071627 100%); font-family:Inter, "Noto Sans Devanagari", Arial, sans-serif; }
+    :root{
+      --panel-bg:#0b2540;
+      --tile-azure:#083E8C;
+      --muted-text:#9CA3AF;
+      --header-grey:#374151;
+    }
 
-      /* Header */
-      #header { margin-bottom:14px; }
-      .app-title { color: var(--header-grey); font-weight:700; font-size:20px; margin:0; }
-      .app-sub { color: var(--muted-text); margin:4px 0 0 0; }
+    body { background: linear-gradient(180deg,#061328 0%, #071627 100%); font-family:Inter, "Noto Sans Devanagari", Arial, sans-serif; }
 
-      /* Token chip hover */
-      .token-chip { transition: transform 0.16s ease, box-shadow 0.16s ease; cursor:default; }
-      .token-chip:hover { transform: translateY(-6px); box-shadow:0 28px 48px rgba(3,12,26,0.55); }
+    #header { margin-bottom:14px; }
+    .app-title { color: var(--header-grey); font-weight:700; font-size:20px; margin:0; }
+    .app-sub { color: var(--muted-text); margin:4px 0 0 0; }
 
-      /* Examples styling (compatible across Gradio versions) */
-      .gr-examples, .gr-examples td, .gr-examples th { background: transparent !important; color: #E6EEF7 !important; }
+    /* ✅ Token chip hover + tooltip */
+    .token-chip { 
+      position: relative;
+      z-index: 1;
+      transition: all 0.25s ease-out;
+      cursor: pointer;
+    }
+    .token-chip:hover { 
+      transform: translateY(-8px);
+      z-index: 100;
+      box-shadow: 0 24px 48px rgba(3,12,26,0.45) !important;
+    }
 
-      /* Make Gradio tooltips readable */
-      .gradio-tooltip { color:#081026 !important; background:#F3F7FB !important; }
+    .tooltip {
+      position: fixed;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: Menlo, monospace;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      z-index: 9999;
+      max-width: 260px;
+      white-space: pre-wrap;
+    }
 
-      /* Responsive columns spacing */
-      .gr-row { gap:18px; }
-
-      /* Small utility */
-      .muted { color: var(--muted-text); font-size:13px; }
-    </style>
+    .gr-examples, .gr-examples td, .gr-examples th { background: transparent !important; color: #E6EEF7 !important; }
+    .gradio-tooltip { color:#081026 !important; background:#F3F7FB !important; }
+    .gr-row { gap:18px; }
+    .muted { color: var(--muted-text); font-size:13px; }
     """
 
-    with gr.Blocks(css="") as demo:
-        # Inject CSS
-        gr.HTML(css, visible=False)
+    js = """
+    <script>
+    document.addEventListener("mouseover", function(e) {
+        const tooltip = document.getElementById("token-tooltip");
+        const chip = e.target.closest(".token-chip");
+        if (!tooltip || !chip) return;
+        const idx = chip.dataset.idx;
+        const tid = chip.dataset.tid;
+        const text = chip.dataset.text;
+        tooltip.innerHTML = `<b>Token #${idx}</b><br>ID: ${tid}<br>Text: ${text}`;
+        tooltip.style.opacity = 1;
+    });
 
-        # Header area (remove unsupported 'classes' kwarg for compatibility)
+    document.addEventListener("mousemove", function(e) {
+        const tooltip = document.getElementById("token-tooltip");
+        if (!tooltip || tooltip.style.opacity === "0") return;
+        tooltip.style.left = e.pageX + 12 + "px";
+        tooltip.style.top = e.pageY + 12 + "px";
+    });
+
+    document.addEventListener("mouseout", function(e) {
+        const chip = e.target.closest(".token-chip");
+        const tooltip = document.getElementById("token-tooltip");
+        if (tooltip && chip) {
+            tooltip.style.opacity = 0;
+        }
+    });
+    </script>
+    """
+
+    with gr.Blocks(css=css) as demo:
+        gr.HTML('<div id="token-tooltip" class="tooltip"></div>')  # Global tooltip container
+        gr.HTML(js)  # Inject JS handlers
+
         with gr.Row(elem_id="header"):
             with gr.Column(scale=1):
                 gr.Markdown(
-                    "<div><h1 class='app-title' style='display:inline-block;'>Marathi BPE Tokenizer</h1>"
+                    "<div><h1 class='app-title'>Marathi BPE Tokenizer</h1>"
                     "<div class='app-sub'>Enterprise token inspection & visualization</div></div>"
                 )
 
-        # Main content: two-column layout
         with gr.Row():
-            # Left: input + examples
             with gr.Column(scale=1):
                 input_text = gr.Textbox(
                     label="Input Text",
@@ -220,16 +259,11 @@ def create_app(tokenizer: MarathiBPETokenizer) -> gr.Blocks:
                     inputs=[input_text],
                 )
 
-            # Right: visual tile, count card, token table
             with gr.Column(scale=1):
-                # visual tile
                 visual_out = gr.HTML("<div class='muted'>Token visualization will appear here</div>")
-                # compact row for count card
                 count_out = gr.HTML("<div class='muted'>Token count will appear here</div>")
-                # token ids table
                 table_out = gr.HTML("<div class='muted'>Token details will appear here</div>")
 
-        # Processing closure binds tokenizer instance
         def _process(text: str):
             return tokenize_and_visualize(text or "", tokenizer)
 
@@ -250,9 +284,8 @@ def main():
         return
 
     demo = create_app(tokenizer)
-    demo.launch(share=True)
+    demo.launch()
 
 
 if __name__ == "__main__":
     main()
-# ...existing code...
