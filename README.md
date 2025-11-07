@@ -59,9 +59,6 @@ If you don't have `requirements.txt`:
 pip install gradio datasets
 # add other packages if tokenizer requires (e.g., sentencepiece)
 ```
-
----
-
 ## Train the tokenizer
 
 Example (Marathi subset, target vocab 6000 recommended to exceed 5000):
@@ -365,5 +362,6 @@ Example inputs are provided below the text box - click any to load into the edit
 
 
 ---
+
 
 
