@@ -334,10 +334,26 @@ Example inputs are provided below the text box - click any to load into the edit
 
 ---
 
-## Licensing & credits
+## References & Citations
 
-- Dataset credit: ai4bharat / samanantar. Respect dataset license and citation.  
-- Add your preferred license (MIT/Apache) to the repo before publishing.
+- Dataset credit: ai4bharat / samanantar. Respect dataset license and citation.
+- Dataset : This project uses the Kannada-English parallel corpus from the AI4Bharat Samanantar Dataset - https://huggingface.co/datasets/ai4bharat/samanantar
+
+      @article{10.1162/tacl_a_00452,
+          author = {Ramesh, Gowtham and Doddapaneni, Sumanth and Bheemaraj, Aravinth and Jobanputra, Mayank and AK, Raghavan and Sharma, Ajitesh and Sahoo, Sujit and Diddee, Harshita and J, Mahalakshmi and Kakwani, Divyanshu and Kumar, Navneet and Pradeep, Aswin and Nagaraj, Srihari and Deepak, Kumar and Raghavan, Vivek and Kunchukuttan, Anoop and Kumar, Pratyush and Khapra, Mitesh Shantadevi},
+          title = "{Samanantar: The Largest Publicly Available Parallel Corpora Collection for 11 Indic Languages}",
+          journal = {Transactions of the Association for Computational Linguistics},
+          volume = {10},
+          pages = {145-162},
+          year = {2022},
+          month = {02},
+          abstract = "{We present Samanantar, the largest publicly available parallel corpora collection for Indic languages. The collection contains a total of 49.7 million sentence pairs between English and 11 Indic languages (from two language families). Specifically, we compile 12.4 million sentence pairs from existing, publicly available parallel corpora, and additionally mine 37.4 million sentence pairs from the Web, resulting in a 4× increase. We mine the parallel sentences from the Web by combining many corpora, tools, and methods: (a) Web-crawled monolingual corpora, (b) document OCR for extracting sentences from scanned documents, (c) multilingual representation models for aligning sentences, and (d) approximate nearest neighbor search for searching in a large collection of sentences. Human evaluation of samples from the newly mined corpora validate the high quality of the parallel sentences across 11 languages. Further, we extract 83.4 million sentence
+                          pairs between all 55 Indic language pairs from the English-centric parallel corpus using English as the pivot language. We trained multilingual NMT models spanning all these languages on Samanantar which outperform existing models and baselines on publicly available benchmarks, such as FLORES, establishing the utility of Samanantar. Our data and models are available publicly at Samanantar and we hope they will help advance research in NMT and multilingual NLP for Indic languages.}",
+          issn = {2307-387X},
+          doi = {10.1162/tacl_a_00452},
+          url = {https://doi.org/10.1162/tacl\_a\_00452},
+          eprint = {https://direct.mit.edu/tacl/article-pdf/doi/10.1162/tacl\_a\_00452/1987010/tacl\_a\_00452.pdf},
+      }
 
 ---
 
@@ -349,4 +365,5 @@ Example inputs are provided below the text box - click any to load into the edit
 
 
 ---
+
 
