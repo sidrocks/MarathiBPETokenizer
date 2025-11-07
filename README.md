@@ -275,7 +275,36 @@ python app.py
 3. Open the local URL printed by Gradio. Paste Marathi text and click Analyze.
 
 ---
+## Try the App 🚀
 
+The tokenizer visualization app is deployed on Hugging Face Spaces:  
+🔗 [Marathi BPE Tokenizer Demo](https://huggingface.co/spaces/sidharthg/marathi-bpe-tokenizer)
+
+<img width="1504" height="909" alt="image" src="https://github.com/user-attachments/assets/8b06a4ce-1141-48a3-9a97-2029d380b698" />
+
+### How to use:
+1. Visit the demo link above
+2. Enter Marathi text in the input box (or use sample texts)
+3. Click "Analyze Text" to see:
+   - Color-coded token visualization
+   - Token count and statistics
+   - Detailed token ID mapping table
+
+Example inputs are provided below the text box - click any to load into the editor.
+
+### Features:
+- Interactive token chips with hover details
+- Token frequency analysis
+- Compression statistics
+- Rich visualization of subword splits
+- Mobile-friendly interface
+
+### Limitations:
+- Max input length: ~500 tokens
+- Processing time varies with text length
+- Requires modern browser for best experience
+
+---
 ## Tips for better results
 
 - Use diverse and large training data to capture language variability.  
@@ -297,5 +326,6 @@ python app.py
 - Add `evaluate_metrics.py` to compute vocab size and compression automatically after training.  
 - Save training logs and merge stats to help debugging and tuning.  
 - Include unit tests for tokenizer encode/decode operations.
+
 
 ---
