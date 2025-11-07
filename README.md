@@ -275,6 +275,26 @@ python app.py
 3. Open the local URL printed by Gradio. Paste Marathi text and click Analyze.
 
 ---
+## Training Logs
+
+    2025-11-07 22:03:09,022 INFO Training tokenizer with vocab size: 6000
+    Initial vocab size (unique characters): 209
+    Training on 660268 characters
+    Merged 1000/5791 pairs, vocab size: 1209
+    Merged 2000/5791 pairs, vocab size: 2209
+    Merged 3000/5791 pairs, vocab size: 3209
+    Merged 4000/5791 pairs, vocab size: 4209
+    Merged 5000/5791 pairs, vocab size: 5209
+    2025-11-07 22:10:25,119 INFO Saved vocabulary to model\vocab.json
+    ============================================================
+    Training Complete!
+    ============================================================
+    Final vocab size: 6000
+    Original characters: 660268
+    Final BPE tokens: 159781
+    Compression ratio: 4.13x
+    ============================================================
+---
 ## Try the App 🚀
 
 The tokenizer visualization app is deployed on Hugging Face Spaces:  
@@ -329,3 +349,4 @@ Example inputs are provided below the text box - click any to load into the edit
 
 
 ---
+
