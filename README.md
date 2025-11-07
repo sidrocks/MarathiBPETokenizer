@@ -145,70 +145,6 @@ python app.py
 - Include unit tests for tokenizer encode/decode operations.
 
 ---
-```<!-- filepath: c:\Users\sidhe\TSAIV4\Session11-Assignment\mr-bpe-tokenizer-main\README.md -->
-<!-- ...existing code... -->
-
-# Marathi BPE Tokenizer
-
-Project to build and visualize a language-specific Byte-Pair Encoding (BPE) tokenizer for Marathi.
-
-**Objective**  
-Build a BPE tokenizer that satisfies:
-- Vocabulary size > 5000 tokens
-- Compression ratio ≥ 3.0
-
----
-
-## Why BPE for Indian languages
-
-- Indian languages (Devanagari scripts such as Marathi) are morphologically rich with many inflected and compound forms.  
-- BPE learns frequent subword fragments (roots, suffixes, prefixes), reducing OOV issues while keeping vocabulary manageable.  
-- BPE balances vocabulary size and sequence length: more robust than pure word-level tokenizers, and more compact than character-level tokenizers.
-
----
-
-## Dataset
-
-Primary dataset used in examples and training:
-- `ai4bharat/samanantar` (Hugging Face datasets) — multilingual parallel corpora; use the Marathi subset (`--subset mr`) for training.
-
-Hugging Face: https://huggingface.co/datasets/ai4bharat/samanantar
-
----
-
-## Repository layout
-
-- `tokenizer.py` — BPE tokenizer implementation (train/save/load/encode/decode).
-- `train.py` — training script (dataset load, BPE merges, save `model/vocab.json`).
-- `app.py` — Gradio visualization UI.
-- `model/` — trained artifacts (e.g., `vocab.json`).
-- `data/` — optional saved training text and samples.
-- `README.md` — this file.
-
----
-
-## Setup (Windows)
-
-1. Create and activate virtual environment
-```powershell
-python -m venv .env
-# PowerShell
-.\.env\Scripts\Activate.ps1
-# CMD
-.\.env\Scripts\activate.bat
-```
-
-2. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-If you don't have `requirements.txt`:
-```bash
-pip install gradio datasets
-# add other packages if tokenizer requires (e.g., sentencepiece)
-```
-
----
 
 ## Train the tokenizer
 
@@ -362,6 +298,7 @@ Example inputs are provided below the text box - click any to load into the edit
 
 
 ---
+
 
 
 
